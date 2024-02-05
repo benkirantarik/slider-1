@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider</title>
+    <style>
+
+        #slider{
+            width: 500px;
+            height: 500px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            overflow: hidden;
+        }
+        #slider .box{
+            width: 100%;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            transition: all 1.5s ease;
+            opacity: 0;
+            font-size: 500px;
+        }
+        .box.left{
+            transform: translateX(-100%);
+            z-index: 998;
+        }
+        .box.center{
+            transform: translateX(0px);
+            z-index: 999;
+            opacity: 1 !important;
+        }
+        .box.right{
+            transform: translateX(100%);
+            z-index: 998;
+        }
+
+        .arrow{
+            width: fit-content;
+            position: absolute;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: black;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 30px;
+            color: white;
+            font-family: cursive;
+            cursor: pointer;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            z-index: 1000;
+        }
+
+        #left-arrow{
+            left: 0;
+        }
+
+        #right-arrow{
+            right: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="slider">
+        <div id="left-arrow" class="arrow"><</div>
+        <div id="right-arrow" class="arrow">></div>
+    </div>
+
+    <script>
+        
+        var sliderDiv   = document.getElementById('slider');
+        var slider_nums = 10;
+        var boxClass    = "";
+
+        for( var i = 0 ; i < slider_nums ; i++ ){
+
+            if(i==0){boxClass="left"}
+            if(i==1){boxClass="center"}
+            if(i==2){boxClass="right"}
+            if(i>2){boxClass=""}
+
+            sliderDiv.innerHTML += `<div class="box ${boxClass}" style="background:${randomColor()}" box-id="${i}">${i}</div>`;
+
+        }
+
+        function randomColor(){
+            let r = Math.floor(Math.random()*255);
+            let g = Math.floor(Math.random()*255);
+            let b = Math.floor(Math.random()*255);
+            let randomColor = `rgb(${r},${g},${b})`;
+            return randomColor;
+        }
+
+        let left_arrow  = document.getElementById('left-arrow');
+        let right_arrow = document.getElementById('right-arrow');
+        let boxs        = document.querySelectorAll(".box");
+        let center_box    = document.querySelector('.box.center');
+        var center_box_id = eval(center_box.getAttribute('box-id'));
+        let c = center_box_id;
+
+        left_arrow.onclick = function(){
+            boxs.forEach((e)=>{e.setAttribute('class','box')})
+            c = (c + 1)%boxs.length;
+            let l = (c - 1)% boxs.length;
+            let r = (c + 1)% boxs.length;
+            if( c == 0){l = boxs.length-1}
+            if(c == boxs.length){c == 0}
+            boxs[l].setAttribute('class','box left');
+            boxs[c].setAttribute('class','box center');
+            boxs[r].setAttribute('class','box right');
+        }
+
+        right_arrow.onclick = function(){
+            boxs.forEach((e)=>{e.setAttribute('class','box')})
+            c = (c - 1)%boxs.length;
+            if(c == -1){c = boxs.length - 1}
+            let r = (c + 1)% boxs.length;
+            let l = (c - 1)% boxs.length;
+            if(l == -1){l = boxs.length - 1}
+            boxs[l].setAttribute('class','box left');
+            boxs[c].setAttribute('class','box center');
+            boxs[r].setAttribute('class','box right');
+        }
+
+        function slider(direction,duration){
+
+            let x = setInterval(()=>{
+            var c = center_box_id;
+            if(direction == "ltr"){
+                left_arrow.click();
+            }
+            if(direction == "rtl"){
+                right_arrow.click();
+            }
+            },duration)
+
+        }
+        slider("rtl",2000)
+    </script>
+</body>
+</html>
